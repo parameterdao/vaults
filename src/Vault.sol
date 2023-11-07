@@ -50,11 +50,10 @@ contract Vault is Ownable {
     fallback() external payable {
         bytes4 functionSelector = bytes4(msg.data[:4]);
         address target = routes[functionSelector];
-
-        require(target != address(0), "Route not found");
-        require(msg.sender == owner(), "Sender not owner");
-        (bool success, ) = target.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
+        if (target != address(0) && msg.sender == owner()) {
+            (bool success, ) = target.delegatecall(msg.data);
+            require(success, "Delegatecall failed");
+        }
     }
 
     receive() external payable {}
