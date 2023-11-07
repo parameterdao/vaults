@@ -108,4 +108,17 @@ contract UniswapParameter {
         // optionally handle validation
         return nonfungiblePositionManager.decreaseLiquidity(params);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               ERC721 RECEIVER                              */
+    /* -------------------------------------------------------------------------- */
+
+    function onERC721Received(
+        address operator,
+        address,
+        uint256 tokenId,
+        bytes calldata
+    ) external returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
 }
