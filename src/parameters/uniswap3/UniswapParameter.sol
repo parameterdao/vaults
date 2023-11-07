@@ -3,8 +3,7 @@ pragma solidity ^0.8.13;
 
 import {ISwapRouter} from "./interfaces/ISwapRouter.sol";
 import {INonfungiblePositionManager} from "./interfaces/INonfungiblePositionManager.sol";
-
-// import {TransferHelper} from "v3-periphery/libraries/TransferHelper.sol";
+import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
 contract UniswapParameter {
     ISwapRouter public immutable swapRouter;
@@ -22,17 +21,17 @@ contract UniswapParameter {
     /*                               TOKEN APPROVALS                              */
     /* -------------------------------------------------------------------------- */
 
-    // function approveSwapRouter(address token, uint amount) external {
-    //     TransferHelper.safeApprove(token, address(swapRouter), amount);
-    // }
+    function approveSwapRouter(address token, uint amount) external {
+        SafeTransferLib.safeApprove(token, address(swapRouter), amount);
+    }
 
-    // function approvePositionManager(address token, uint amount) external {
-    //     TransferHelper.safeApprove(
-    //         token,
-    //         address(nonfungiblePositionManager),
-    //         amount
-    //     );
-    // }
+    function approvePositionManager(address token, uint amount) external {
+        SafeTransferLib.safeApprove(
+            token,
+            address(nonfungiblePositionManager),
+            amount
+        );
+    }
 
     /* -------------------------------------------------------------------------- */
     /*                              SWAP EXACT INPUTS                             */
