@@ -4,5 +4,3 @@ erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/
 forge-std/=lib/forge-std/src/
 openzeppelin-contracts/=lib/openzeppelin-contracts/
 v3-periphery/=lib/v3-periphery/contracts/
-@openzeppelin/contracts/token/ERC721/=@openzeppelin/contracts/token/ERC721/extensions/
-@openzeppelin/contracts/token/ERC721/=@openzeppelin/contracts/token/ERC721/extensions/

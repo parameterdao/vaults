@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {ISwapRouter} from "v3-periphery/interfaces/ISwapRouter.sol";
-import {INonfungiblePositionManager} from "v3-periphery/interfaces/INonfungiblePositionManager.sol";
-import {TransferHelper} from "v3-periphery/libraries/TransferHelper.sol";
-import {IERC721Receiver} from "openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol";
+import {ISwapRouter} from "./interfaces/ISwapRouter.sol";
+import {INonfungiblePositionManager} from "./interfaces/INonfungiblePositionManager.sol";
 
-contract UniswapParameter is IERC721Receiver {
+// import {TransferHelper} from "v3-periphery/libraries/TransferHelper.sol";
+
+contract UniswapParameter {
     ISwapRouter public immutable swapRouter;
     INonfungiblePositionManager public immutable nonfungiblePositionManager;
 
@@ -22,17 +22,17 @@ contract UniswapParameter is IERC721Receiver {
     /*                               TOKEN APPROVALS                              */
     /* -------------------------------------------------------------------------- */
 
-    function approveSwapRouter(address token, uint amount) {
-        TransferHelper.safeApprove(token, address(swapRouter), amount);
-    }
+    // function approveSwapRouter(address token, uint amount) external {
+    //     TransferHelper.safeApprove(token, address(swapRouter), amount);
+    // }
 
-    function approvePositionManager(address token, uint amount) {
-        TransferHelper.safeApprove(
-            token,
-            address(nonfungiblePositionManager),
-            amount
-        );
-    }
+    // function approvePositionManager(address token, uint amount) external {
+    //     TransferHelper.safeApprove(
+    //         token,
+    //         address(nonfungiblePositionManager),
+    //         amount
+    //     );
+    // }
 
     /* -------------------------------------------------------------------------- */
     /*                              SWAP EXACT INPUTS                             */
@@ -40,14 +40,14 @@ contract UniswapParameter is IERC721Receiver {
 
     function swapExactInputSingle(
         ISwapRouter.ExactInputSingleParams memory params
-    ) returns (uint256) {
+    ) external returns (uint256) {
         // optionally handle validation
         return swapRouter.exactInputSingle(params);
     }
 
     function swapExactInputMultihop(
         ISwapRouter.ExactInputParams memory params
-    ) returns (uint256) {
+    ) external returns (uint256) {
         // optionally handle validation
         return swapRouter.exactInput(params);
     }
@@ -58,14 +58,14 @@ contract UniswapParameter is IERC721Receiver {
 
     function swapExactOutputSingle(
         ISwapRouter.ExactOutputSingleParams memory params
-    ) returns (uint256) {
+    ) external returns (uint256) {
         // optionally handle validation
         return swapRouter.exactOutputSingle(params);
     }
 
     function swapExactOutputMultihop(
         ISwapRouter.ExactOutputParams memory params
-    ) returns (uint256) {
+    ) external returns (uint256) {
         // optionally handle validation
         return swapRouter.exactOutput(params);
     }
@@ -77,6 +77,7 @@ contract UniswapParameter is IERC721Receiver {
     function mintLiquidityPosition(
         INonfungiblePositionManager.MintParams memory params
     )
+        external
         returns (
             uint256 tokenId,
             uint128 liquidity,
@@ -90,22 +91,35 @@ contract UniswapParameter is IERC721Receiver {
 
     function collectLiquidityFees(
         INonfungiblePositionManager.CollectParams memory params
-    ) returns (uint256 amount0, uint256 amount1) {
+    ) external returns (uint256 amount0, uint256 amount1) {
         // optionally handle validation
         return nonfungiblePositionManager.collect(params);
     }
 
     function increaseLiquidity(
         INonfungiblePositionManager.IncreaseLiquidityParams memory params
-    ) returns (uint128 liquidity, uint256 amount0, uint256 amount1) {
+    ) external returns (uint128 liquidity, uint256 amount0, uint256 amount1) {
         // optionally handle validation
         return nonfungiblePositionManager.increaseLiquidity(params);
     }
 
     function decreaseLiquidity(
         INonfungiblePositionManager.DecreaseLiquidityParams memory params
-    ) returns (uint256 amount0, uint256 amount1) {
+    ) external returns (uint256 amount0, uint256 amount1) {
         // optionally handle validation
         return nonfungiblePositionManager.decreaseLiquidity(params);
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                               ERC721 RECEIVER                              */
+    /* -------------------------------------------------------------------------- */
+
+    function onERC721Received(
+        address operator,
+        address,
+        uint256 tokenId,
+        bytes calldata
+    ) external returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 }
