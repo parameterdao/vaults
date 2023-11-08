@@ -5,7 +5,7 @@ import {ISwapRouter} from "./interfaces/ISwapRouter.sol";
 import {INonfungiblePositionManager} from "./interfaces/INonfungiblePositionManager.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
-contract UniswapParameter {
+contract UniswapSinglePair {
     ISwapRouter public immutable swapRouter;
     INonfungiblePositionManager public immutable nonfungiblePositionManager;
 
@@ -13,13 +13,15 @@ contract UniswapParameter {
     address immutable token1;
 
     constructor(
-        ISwapRouter _swapRouter,
-        INonfungiblePositionManager _nonfungiblePositionManager,
+        address _swapRouter,
+        address _nonfungiblePositionManager,
         address _token0,
         address _token1
     ) {
-        swapRouter = _swapRouter;
-        nonfungiblePositionManager = _nonfungiblePositionManager;
+        swapRouter = ISwapRouter(_swapRouter);
+        nonfungiblePositionManager = INonfungiblePositionManager(
+            _nonfungiblePositionManager
+        );
         token0 = _token0;
         token1 = _token1;
     }
@@ -57,6 +59,9 @@ contract UniswapParameter {
             params.tokenOut == token0 || params.tokenOut == token1,
             "token not allowed"
         );
+
+        require(params.recipient == address(this), "unauthorized recipient");
+
         // optionally handle validation
         return swapRouter.exactInputSingle(params);
     }
@@ -77,6 +82,7 @@ contract UniswapParameter {
             params.tokenOut == token0 || params.tokenOut == token1,
             "token not allowed"
         );
+        require(params.recipient == address(this), "unauthorized recipient");
         return swapRouter.exactOutputSingle(params);
     }
 
@@ -103,6 +109,8 @@ contract UniswapParameter {
             params.token1 == token0 || params.token1 == token1,
             "token not allowed"
         );
+        require(params.recipient == address(this), "unauthorized recipient");
+
         // optionally handle validation
         return nonfungiblePositionManager.mint(params);
     }
@@ -111,6 +119,8 @@ contract UniswapParameter {
         INonfungiblePositionManager.CollectParams memory params
     ) external returns (uint256 amount0, uint256 amount1) {
         // optionally handle validation
+
+        require(params.recipient == address(this), "unauthorized recipient");
         return nonfungiblePositionManager.collect(params);
     }
 
